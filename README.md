@@ -1,36 +1,44 @@
 The scalar product of two vectors is called dot product.
 
 ```c
-Each thread can compute the sum of multiple components of vectors. Since
-there are 10 components, but only a maximum of 4 total threads, each thread
-computer the sum of its respective component, and shifts by a stride of the
-total number of vectors. This is done as long as it does not exceed the
-length of the vectors.
+Each thread computes pairwise product of multiple components of vector.
+Since there are 10 components, but only a maximum of 4 total threads,
+each thread pairwise product of its component, and shifts by a stride
+of the total number of threads. This is done as long as it does not
+exceed the length of the vector. Each thread maintains the sum of the
+pairwise products it calculates.
 
-1. Compute sum at respective index, while within bounds.
+Once pairiwise product calculation completes, the per-thread sum is
+stored in a cache, and then all threads in a block sync up to calculate
+the sum for the entire block in a binary tree fashion (in log N steps).
+The overall sum of each block is then stored in an array, which holds
+this partial sum. This partial sum is completed on the CPU. Hence, our
+dot product is complete.
+
+1. Compute sum of pairwise product at respective index, while within bounds.
 2. Shift to the next component, by a stride of total no. of threads (4).
-
-threadIdx.x: thread index, within block (0 ... 1)
-blockIdx.x:  block index, within grid (0 ... 1)
-blockDim.x:  number of threads in a block (2)
-i: index into the vectors
+3. Store per-thread sum in shared cache (for further reduction).
+4. Wait for all threads within the block to finish.
+5. Reduce the sum in the cache to a single value in binary tree fashion.
+6. Store this per-block sum into a partial sum array.
 ```
 
 ```c
-1. Allocate space for 3 vectors A, B, and C (of length 10).
-2. Define vectors A and B (C = A + B will be computed by GPU).
-3. Allocate space for A, B, C on GPU.
+1. Allocate space for 2 vectors A, B (of length 10).
+2. Define vectors A and B.
+3. Allocate space for partial sum C (of length "blocks").
 4. Copy A, B from host memory to device memory (GPU).
 5. Execute kernel with 2 threads per block, and max. 2 blocks (2*2 = 4).
-6. Wait for kernel to complete, and copy C from device to host memory.
-7. Validate if the vector sum is correct (on CPU).
+6. Wait for kernel to complete, and copy partial sum C from device to host memory.
+7. Reduce the partial sum C to a single value, the dot product (on CPU).
+8. Validate if the dot product is correct (on CPU).
 ```
 
 ```bash
 # OUTPUT
-a = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18}
-b = {0, -1, -2, -3, -4, -5, -6, -7, -8, -9}
-c = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+a = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0}
+b = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0}
+a .* b = 570.0
 ```
 
 See [main.cu] for code.

@@ -29,11 +29,54 @@ inline void try_cuda(cudaError err, const char* exp, const char* func, int line,
 #endif
 
 
+#ifndef __SYNCTHREADS
+void __syncthreads();
+#define __SYNCTHREADS() __syncthreads()
+#endif
+
+
+#ifndef SUM_ARRAY
+float sum_array(float *x, int N) {
+  float a = 0;
+  for (int i=0; i<N; i++)
+    a += x[i];
+  return a;
+}
+
+// Finds sum of array elements.
+// SUM_ARRAY({1, 2, 3}, 2) = 6
+#define SUM_ARRAY(x, N) sum_array(x, N)
+#endif
+
+
+#ifndef PRINTVEC
+inline void printvec(float* x, int N) {
+  printf("{");
+  for (int i = 0; i < N - 1; i++)
+    printf("%.1f, ", x[i]);
+  if (N > 0) printf("%.1f", x[N - 1]);
+  printf("}");
+}
+
+// Prints a vector.
+// PRINTVEC(x, 3) = {1, 2, 3}
+#define PRINTVEC(x, N) printvec(x, N)
+#endif
+
+
+#ifndef SUM_SQUARES
+inline int sum_squares(int x) {
+  return x * (x+1) * (2*x+1) / 6;
+}
+
+// Computes sum of squares of natural numbers.
+// SUM_SQUARES(3) = 1^2 + 2^2 + 3^2 = 14
+#define SUM_SQUARES(x) sum_squares(x)
+#endif
+
+
 #ifndef CEILDIV
-// Computes rounded-up integer division.
-// ceildiv(6, 3) = 2
-// ceildiv(7, 3) = 3
-int ceildiv(int x, int y) {
+inline int ceildiv(int x, int y) {
   return (x + y-1) / y;
 }
 
@@ -44,26 +87,14 @@ int ceildiv(int x, int y) {
 #endif
 
 
-#ifndef PRINTVEC
-// Prints a vector.
-// printvec(x, 3) = {1, 2, 3}
-inline void printvec(int *x, int N) {
-  printf("{");
-  for (int i=0; i<N-1; i++)
-    printf("%d, ", x[i]);
-  if (N>0) printf("%d", x[N-1]);
-  printf("}");
-}
-
-// Prints a vector.
-// PRINTVEC(x, 3) = {1, 2, 3}
-#define PRINTVEC(x, N) printvec(x, N)
-#endif
-
 #ifndef MAX
+// Finds maximum value.
+// MAX(2, 3) = 3
 #define MAX(x, y) ((x) > (y)? (x) : (y))
 #endif
 
 #ifndef MIN
+// Finds minimum value.
+// MIN(2, 3) = 2
 #define MIN(x, y) ((x) < (y)? (x) : (y))
 #endif
