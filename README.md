@@ -14,7 +14,10 @@ the sum for the entire block in a binary tree fashion (in log N steps).
 The overall sum of each block is then stored in an array, which holds
 this partial sum. This partial sum is completed on the CPU. Hence, our
 dot product is complete.
+```
 
+```
+kernel():
 1. Compute sum of pairwise product at respective index, while within bounds.
 2. Shift to the next component, by a stride of total no. of threads (4).
 3. Store per-thread sum in shared cache (for further reduction).
@@ -24,6 +27,7 @@ dot product is complete.
 ```
 
 ```c
+main():
 1. Allocate space for 2 vectors A, B (of length 10).
 2. Define vectors A and B.
 3. Allocate space for partial sum C (of length "blocks").
