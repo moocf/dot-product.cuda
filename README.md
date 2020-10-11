@@ -45,9 +45,10 @@ b = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0}
 a .* b = 570.0
 ```
 
-See [main.cu] for code.
+See [main.cu] for code, [main.ipynb] for notebook.
 
 [main.cu]: main.cu
+[main.ipynb]: https://colab.research.google.com/drive/1_32WD_ckoLJ1zuJBwMNeeIKHbdBkTXZY?usp=sharing
 
 
 ### references
