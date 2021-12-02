@@ -39,18 +39,22 @@ main():
 ```
 
 ```bash
-# OUTPUT
-a = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0}
-b = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0}
-a .* b = 570.0
+$ nvcc -std=c++17 -Xcompiler -O3 main.cu
+$ ./a.out
+
+# a = {0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0}
+# b = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0}
+# a .* b = 570.0
 ```
 
-See [main.cu] for code, [main.ipynb] for notebook.
+See [main.cu] for code.
 
 [main.cu]: main.cu
-[main.ipynb]: https://colab.research.google.com/drive/1_32WD_ckoLJ1zuJBwMNeeIKHbdBkTXZY?usp=sharing
+
+<br>
+<br>
 
 
-### references
+## References
 
-- [CUDA by Example :: Jason Sanders, Edward Kandrot](http://www.mat.unimi.it/users/sansotte/cuda/CUDA_by_Example.pdf)
+- [CUDA by Example :: Jason Sanders, Edward Kandrot](https://gist.github.com/wolfram77/72c51e494eaaea1c21a9c4021ad0f320)
