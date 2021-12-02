@@ -93,7 +93,7 @@ int main() {
 
   kernel<<<blocks, threads>>>(cpartialD, aD, bD, N); // 5
 
-  TRY( cudaMemcpy(cpartial, cpartialD, NC, cudaMemcpyDeviceToHost) ); // 6
+  TRY( cudaMemcpy(cpartial.data(), cpartialD, NC, cudaMemcpyDeviceToHost) ); // 6
   float c = sum(cpartial);  // 7
 
   printf("a = "); println(a);
@@ -104,5 +104,6 @@ int main() {
   if (c != cexpected) {                   // 8
     fprintf(stderr, "ERROR: a .* b != %.1f\n", cexpected);
   }
+  printf("\n");
   return 0;
 }
